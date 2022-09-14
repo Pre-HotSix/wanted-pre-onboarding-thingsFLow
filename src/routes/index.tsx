@@ -1,6 +1,6 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Layout from '../components/commons/layout';
-import { MainPage, DetailPage } from '../pages/index';
+import { MainPage, DetailPage, ErrorPage } from '../pages/index';
 
 export default function Router() {
   return (
@@ -10,6 +10,7 @@ export default function Router() {
           <Route path="/" element={<MainPage />} />
           <Route path="/:id" element={<DetailPage />} />
         </Route>
+        <Route path="*" element={<ErrorPage />} />
       </Routes>
     </BrowserRouter>
   );
