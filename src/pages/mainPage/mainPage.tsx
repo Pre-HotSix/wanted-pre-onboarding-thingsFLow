@@ -1,7 +1,28 @@
-import React from 'react';
+import { useContext } from 'react';
+import { GlobalContext } from '../../App';
+import useQuery from '../../hooks/query';
+import { IIssues } from '../../types/Issues';
+import Card from '../../components/Card';
 
-const MainPage = () => {
-  return <div>메인이에용</div>;
-};
+export default function MainPage() {
+  const { githubIssues } = useContext(GlobalContext);
 
-export default MainPage;
+  useQuery();
+
+  return (
+    <div>
+      {githubIssues
+        ?.map((issue: IIssues, index: number) => (
+          <Card key={index} issue={issue} />
+        ))
+        .sort(function (
+          a: { props: { issue: { comments: number } } },
+          b: { props: { issue: { comments: number } } }
+        ) {
+          return (
+            -Number(a.props.issue.comments) - Number(b.props.issue.comments)
+          );
+        })}
+    </div>
+  );
+}
