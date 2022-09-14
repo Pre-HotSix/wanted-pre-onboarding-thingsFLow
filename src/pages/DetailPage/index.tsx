@@ -2,10 +2,7 @@ import * as S from './style';
 import { useLocation } from "react-router-dom";
 import { useContext } from 'react';
 import { IssuesContext } from '../../store/IssuesStore';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { docco } from 'react-syntax-highlighter/dist/esm/styles/hljs';
+import MDEditor from '@uiw/react-md-editor';
 
 interface stateGuard {
   index: number
@@ -49,30 +46,7 @@ export default function DetailPage () {
   const issueBody = () => {
     return (
       <S.IssueBodyBox>
-        <ReactMarkdown
-          remarkPlugins={[[remarkGfm, {singleTilde: false}]]}
-          components={{
-            code({inline, className, children}) {
-              const match = /language-(\w+)/.exec(className || '')
-              return !inline && match ? (
-                <SyntaxHighlighter
-                  // eslint-disable-next-line react/no-children-prop
-                  children={String(children).replace(/\n$/, '')}
-                  style={docco}
-                  language={match[1]}
-                  PreTag="div"
-                />
-              ) : (
-                <code>
-                  {children}
-                </code>
-              )
-            }
-          }}
-        >
-          {mainIssue.body}
-        </ReactMarkdown>
-        
+        <MDEditor.Markdown source={mainIssue.body} style={{ whiteSpace: 'pre-wrap' }} />
       </S.IssueBodyBox>
     );
   };

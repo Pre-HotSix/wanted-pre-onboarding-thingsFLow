@@ -57,23 +57,4 @@ export const CommentBox = styled.div`
 
 export const IssueBodyBox = styled.div`
   white-space: wrap;
-  * {
-    padding: 10px 0;
-  }
-  pre > * {
-    overflow-x: scroll;
-    ::-webkit-scrollbar {
-      display: none;
-    }
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
-  p > * {
-    overflow-x: scroll;
-    ::-webkit-scrollbar {
-      display: none;
-    }
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-  }
 `;
