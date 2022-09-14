@@ -1,15 +1,16 @@
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Layout from '../components/commons/layout';
-import MainPage from '../pages/mainPage/mainPage';
+import { IssueDetail, Home } from '../pages';
+import { IssuesProvider } from '../libs/context/IssuesContext';
 
 export default function Router() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route path="/" element={<MainPage />} />
-        </Route>
-      </Routes>
+      <IssuesProvider>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/:id" element={<IssueDetail />} />
+        </Routes>
+      </IssuesProvider>
     </BrowserRouter>
   );
 }
