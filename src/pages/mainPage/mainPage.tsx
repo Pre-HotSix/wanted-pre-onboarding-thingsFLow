@@ -1,7 +1,8 @@
-import React from 'react';
+import useQuery from '../../hooks/query';
+import InfiniteScroll from '../../components/InfiniteScroll';
 
-const MainPage = () => {
-  return <div>메인이에용</div>;
-};
+export default function MainPage() {
+  useQuery();
 
-export default MainPage;
+  return <InfiniteScroll />;
+}
