@@ -1,52 +1,75 @@
 import * as S from './style';
-import { useLocation } from "react-router-dom";
-import { useContext } from 'react';
+import { useParams } from 'react-router-dom';
+import { useContext, useState, useEffect } from 'react';
 import { IssuesContext } from '../../store/IssuesStore';
 import MDEditor from '@uiw/react-md-editor';
-
-interface stateGuard {
-  index: number
-};
+import ErrorPage from '../ErrorPage';
 
 export default function DetailPage () {
-  const value = useContext(IssuesContext); 
-  const state = useLocation().state as stateGuard;
-  const index = state.index;
-  const issues = value?.get();
-  const mainIssue = issues[index];
+  const value = useContext(IssuesContext);
+  const { id } = useParams();
+  const [issue, setIssue] = useState<any>(undefined);
+  const [error, setError] = useState(false);
 
-  const createdDate = new Date(mainIssue.created_at).toLocaleDateString();
-  const formatCreatedDate = createdDate.replace('.', '년').replace('.', '월').replace('.', '일');
+  const getOneIssue = async () => {
+    try {
+      const data = await value?.singleIssueApi(id);
+      if (data.state === 'closed') throw new Error;
+
+      const createdDate = new Date(data.createdAt).toLocaleDateString();
+      const formatCreatedDate = createdDate.replace('.', '년').replace('.', '월').replace('.', '일');
+
+      setIssue({
+        id: data.id,
+        num: data.number,
+        title: data.title,
+        author: data.user.login,
+        authorProfile: data.user.avatar_url,
+        createdAt: formatCreatedDate,
+        comments: data.comments,
+        body: data.body,
+      });
+    } catch (error) {
+      setError(true);
+    }
+  };
+  
+  useEffect(() => {
+    getOneIssue();
+  }, []);
+
+  if (error) return <ErrorPage />;
+  if (issue === undefined) return (<div>Loading...</div>);
 
   const issueHead = () => {
     return (
-        <S.IssueHeadBox className='single'>
-          <S.ProfileBox>
-            <img src={mainIssue.user.avatar_url} alt="프로필이미지" />
-          </S.ProfileBox>
-          <S.TitelBox>
-            <p>
-              <span># {mainIssue.number} </span>
-              <span>{mainIssue.title}</span>
-            </p>
-            <p>
-              <span>작성자: {mainIssue.user.login}, </span>
-              <span>작성일: {formatCreatedDate}</span>
-            </p>
-          </S.TitelBox>
-          <S.CommentBox>
-            <p>
-              코멘트: {mainIssue.comments}
-            </p>
-          </S.CommentBox>
-        </S.IssueHeadBox>
+      <S.IssueHeadBox className='single'>
+        <S.ProfileBox>
+          <img src={issue.authorProfile} alt="프로필이미지" />
+        </S.ProfileBox>
+        <S.TitelBox>
+          <p>
+            <span># {issue.num} </span>
+            <span>{issue.title}</span>
+          </p>
+          <p>
+            <span>작성자: {issue.author}, </span>
+            <span>작성일: {issue.createdAt}</span>
+          </p>
+        </S.TitelBox>
+        <S.CommentBox>
+          <p>
+            코멘트: {issue.comments}
+          </p>
+        </S.CommentBox>
+      </S.IssueHeadBox>
     );
   };
 
   const issueBody = () => {
     return (
       <S.IssueBodyBox>
-        <MDEditor.Markdown source={mainIssue.body} style={{ whiteSpace: 'pre-wrap' }} />
+        <MDEditor.Markdown source={issue.body} />
       </S.IssueBodyBox>
     );
   };
@@ -58,4 +81,4 @@ export default function DetailPage () {
       {issueBody()}
     </S.DetailBox>
   );
-}
+};

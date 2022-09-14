@@ -1,5 +1,5 @@
 import { createContext, useState } from 'react';
-import { OWNER, REPO, issuesApi } from '../apis/index';
+import { OWNER, REPO, issuesApi, totalIssuesApi, singleIssueApi } from '../apis/index';
 
 interface issueGuard {
   [key: string]: any
@@ -11,6 +11,8 @@ interface storeGuard {
   issueLists: issueGuard[];
   scrollLists: (page: number) => Promise<null | void>;
   setIssueLists: React.Dispatch<React.SetStateAction<issueGuard[]>>;
+  totalIssuesApi: () => Promise<any>;
+  singleIssueApi: (issue_number: string | undefined) => Promise<any>;
   get: () => any;
   set: (value: any) => void;
 };
@@ -30,6 +32,8 @@ export default function IssuesStore(props: { children: any}) {
       setIssueLists([ ...issueLists, ...addLists ]);
     },
     setIssueLists,
+    totalIssuesApi,
+    singleIssueApi,
 
     get: () => {
       const result = JSON.parse(sessionStorage.getItem('issue_lists') || '[]');

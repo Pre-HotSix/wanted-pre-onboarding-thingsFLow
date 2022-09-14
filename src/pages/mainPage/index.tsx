@@ -15,6 +15,7 @@ export default function MainPage () {
     return 1;
   });
   const [load, setLoad] = useState(true);
+  const [totalIssues, setTotalIssues] = useState(0);
 
   const io = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
@@ -30,10 +31,9 @@ export default function MainPage () {
   });
 
   useEffect(() => {
+    value?.totalIssuesApi().then(data => setTotalIssues(data.open_issues));
     scroll.current && io.observe(scroll.current);
-    if (value?.issueLists && (value?.issueLists.length % 30) !== 0) {
-      setLoad(false);
-    };
+    if (value?.issueLists && value?.issueLists.length % totalIssues === 0) setLoad(false);
   }, [value?.issueLists]);
   
   const issueBox = value?.issueLists.map((issue, index) => {
@@ -43,17 +43,19 @@ export default function MainPage () {
 
     const issueCard = () => {
       return (
-        <Link to={'/' + issue.number} state={{ index }} key={issue.number}>
+        <Link to={'/' + issue.number} key={issue.number}>
           <S.IssueBox className='single'>
             <S.TitelBox>
-              <p>
-                <span># {issue.number} </span>
-                <span>{issue.title}</span>
-              </p>
-              <p>
-                <span>작성자: {issue.user.login}, </span>
-                <span>작성일: {formatCreatedDate}</span>
-              </p>
+              <div>
+                <p>
+                  <span># {issue.number} </span>
+                  <span>{issue.title}</span>
+                </p>
+                <p>
+                  <span>작성자: {issue.user.login}, </span>
+                  <span>작성일: {formatCreatedDate}</span>
+                </p>
+              </div>
             </S.TitelBox>
             <S.CommentBox>
               <p>
@@ -84,7 +86,7 @@ export default function MainPage () {
           {issueCard()}
         </Fragment>
       )
-    }
+    };
 
     return issueCard();
   });

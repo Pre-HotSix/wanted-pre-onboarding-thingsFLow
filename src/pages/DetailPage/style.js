@@ -27,6 +27,7 @@ export const ProfileBox = styled.div`
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
+    border-radius: 50%;
   }
 `;
 
@@ -56,5 +57,11 @@ export const CommentBox = styled.div`
 `;
 
 export const IssueBodyBox = styled.div`
-  white-space: wrap;
+  div {
+    padding: 20px 0;
+    white-space: pre-wrap;
+    > * {
+      margin: 0;
+    }
+  }
 `;
