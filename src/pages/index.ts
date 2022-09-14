@@ -1,1 +1,2 @@
-export { default as HomePage } from './mainPage/mainPage';
+export { default as Home } from './Home';
+export { default as IssueDetail } from './IssueDetail';
